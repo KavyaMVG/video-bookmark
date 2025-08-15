@@ -1,0 +1,9 @@
+{
+  "name": "Video Bookmark",
+  "description": "Extension to bookmark videos",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

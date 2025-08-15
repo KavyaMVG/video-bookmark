@@ -1,0 +1,30 @@
+body{
+    width: 400px;
+}
+
+.add-bookmark{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn{
+    padding: 0.5rem;
+    background: none;
+    cursor: pointer;
+}
+
+.add-bookmark-btn{
+    border-radius: 5px;
+}
+
+.bookmark-list{
+    border: 1px solid red;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.delete-btn{
+    border: 0;
+}
