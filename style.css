@@ -18,13 +18,18 @@ body{
     border-radius: 5px;
 }
 
-.bookmark-list{
-    border: 1px solid red;
+.bookmark-item{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border: 1px solid red;
+    margin-bottom: .5rem;
 }
 
 .delete-btn{
     border: 0;
+}
+
+.bookmark-img{
+    padding: .5rem;
 }
