@@ -5,5 +5,15 @@
   "manifest_version": 3,
   "action": {
     "default_popup": "popup.html"
+  },
+  "permissions": ["tabs"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
   }
 }
