@@ -1,54 +1,68 @@
 const addBookmarkBtn = document.querySelector(".add-bookmark-btn");
 const bookmarkList = document.querySelector(".bookmark-list");
 
+const bookmarks = [];
+
 addBookmarkBtn.addEventListener("click", async () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
-    chrome.tabs.sendMessage(activeTab.id, { action: "getTimestamp" });
-  });
-});
+    const url = new URL(activeTab.url);
+    const videoId = url.searchParams.get("v");
+    chrome.tabs.sendMessage(
+      activeTab.id,
+      { action: "getTimestamp" },
+      (response) => {
+        const time = response.time;
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+        const title = `${response.title.slice(0, 20)}...`;
 
-const bookmarks = [];
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  chrome.storage.local.get(["bookmarks"], (result) => {
-    const bookmarks = result.bookmarks || [];
-    bookmarks.push(request.data);
+        const bookmarkData = { time, videoId, thumbnailUrl, title };
 
-    chrome.storage.local.set({ bookmarks });
-    bookmarkUI(request.data);
+        chrome.storage.local.get(["bookmarks"], (result) => {
+          const bookmarks = result.bookmarks || [];
+          const exists = bookmarks.some(
+            (bm) => bm.videoId === videoId && bm.time === time
+          );
+          if (!exists) {
+            bookmarks.push(bookmarkData);
+            chrome.storage.local.set({ bookmarks });
+            bookmarkUI(bookmarkData);
+          }
+        });
+      }
+    );
   });
 });
 
 const bookmarkUI = (data) => {
   const bookmarkItem = document.createElement("div");
   bookmarkItem.classList.add("bookmark-item");
-
   const imgDiv = document.createElement("div");
   imgDiv.classList.add("bookmark-img");
   let imgEle = document.createElement("img");
-  imgEle.src = "./assets/vintageBuilding.jpg";
-  imgEle.width = "50";
-  imgEle.height = "50";
+  imgEle.src = data.thumbnailUrl;
   imgDiv.append(imgEle);
 
   const timeDiv = document.createElement("div");
-  timeDiv.innerText = data;
+  timeDiv.classList.add("time");
+  timeDiv.innerText = data.time || data;
+
+  const container = document.createElement("div");
+  container.classList.add("title-container");
+
+  const span = document.createElement("span");
+  span.className = "title-text";
+  span.innerText = data.title;
+
   const controlsDiv = document.createElement("div");
   const playIcon = document.createElement("i");
   playIcon.classList.add("fa-solid", "fa-play");
 
-  //   const pauseIcon = document.createElement("i");
-  //   pauseIcon.classList.add("fa-solid", "fa-pause");
-  //   pauseIcon.style.display = "none";
-
   playIcon.addEventListener("click", () => {
-    // playIcon.style.display = "none";
-    // pauseIcon.style.display = "inline-block";
-
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, {
         action: "playFrom",
-        time: data,
+        time: data || data.time,
       });
     });
   });
@@ -72,7 +86,7 @@ const bookmarkUI = (data) => {
     chrome.storage.local.get(["bookmarks"], (result) => {
       let bookmarks = result.bookmarks || [];
 
-      bookmarks = bookmarks.filter((item) => item !== data);
+      bookmarks = bookmarks.filter((item) => item.time !== data.time);
 
       chrome.storage.local.set({ bookmarks }, () => {
         bookmarkItem.remove();
@@ -80,12 +94,10 @@ const bookmarkUI = (data) => {
     });
   });
 
-  //   playIcon.addEventListener("click", () => {
-  //     console.log("time", data);
-  //   });
-
+  container.appendChild(span);
   bookmarkItem.appendChild(imgDiv);
   bookmarkItem.appendChild(timeDiv);
+  bookmarkItem.appendChild(container);
   bookmarkItem.appendChild(controlsDiv);
   bookmarkItem.appendChild(deleteBtn);
 
@@ -94,7 +106,6 @@ const bookmarkUI = (data) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(["bookmarks"], (result) => {
-    console.log({ result });
     const bookmarks = result.bookmarks || [];
     bookmarks.forEach((item) => {
       bookmarkUI(item);
