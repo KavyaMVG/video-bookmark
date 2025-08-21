@@ -33,14 +33,33 @@ const bookmarkUI = (data) => {
 
   const timeDiv = document.createElement("div");
   timeDiv.innerText = data;
-
   const controlsDiv = document.createElement("div");
   const playIcon = document.createElement("i");
   playIcon.classList.add("fa-solid", "fa-play");
-  const pauseIcon = document.createElement("i");
-  pauseIcon.classList.add("fa-solid", "fa-pause");
+
+  //   const pauseIcon = document.createElement("i");
+  //   pauseIcon.classList.add("fa-solid", "fa-pause");
+  //   pauseIcon.style.display = "none";
+
+  playIcon.addEventListener("click", () => {
+    // playIcon.style.display = "none";
+    // pauseIcon.style.display = "inline-block";
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: "playFrom",
+        time: data,
+      });
+    });
+  });
+
+  //   pauseIcon.addEventListener("click", () => {
+  //     pauseIcon.style.display = "none";
+  //     playIcon.style.display = "inline-block";
+  //   });
+
   controlsDiv.appendChild(playIcon);
-  controlsDiv.appendChild(pauseIcon);
+  //   controlsDiv.appendChild(pauseIcon);
 
   const deleteBtn = document.createElement("button");
   deleteBtn.classList.add("btn", "delete-btn");
@@ -49,6 +68,21 @@ const bookmarkUI = (data) => {
   trashIcon.classList.add("fa-solid", "fa-trash");
 
   deleteBtn.appendChild(trashIcon);
+  deleteBtn.addEventListener("click", () => {
+    chrome.storage.local.get(["bookmarks"], (result) => {
+      let bookmarks = result.bookmarks || [];
+
+      bookmarks = bookmarks.filter((item) => item !== data);
+
+      chrome.storage.local.set({ bookmarks }, () => {
+        bookmarkItem.remove();
+      });
+    });
+  });
+
+  //   playIcon.addEventListener("click", () => {
+  //     console.log("time", data);
+  //   });
 
   bookmarkItem.appendChild(imgDiv);
   bookmarkItem.appendChild(timeDiv);
@@ -60,6 +94,7 @@ const bookmarkUI = (data) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.local.get(["bookmarks"], (result) => {
+    console.log({ result });
     const bookmarks = result.bookmarks || [];
     bookmarks.forEach((item) => {
       bookmarkUI(item);

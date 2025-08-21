@@ -2,6 +2,10 @@ body{
     width: 400px;
 }
 
+.container{
+    background-color: #8000805c
+}
+
 .add-bookmark{
     display: flex;
     justify-content: space-between;
@@ -14,16 +18,30 @@ body{
     cursor: pointer;
 }
 
+.add-bookmark h1{
+    color: #fff;
+    margin-left: .5rem;
+    letter-spacing: 0.1ch;
+}
+
 .add-bookmark-btn{
     border-radius: 5px;
+    background-color: #8000805c;
+    color: #fff;
+    border: 2px solid #8000805c;
+    margin-right: .5rem;
+    letter-spacing: 0.1ch;
 }
 
 .bookmark-item{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid red;
     margin-bottom: .5rem;
+    border: 2px solid #8000805c;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: .5rem;
 }
 
 .delete-btn{
