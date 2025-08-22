@@ -2,7 +2,6 @@ const progressBar = document.querySelector(".ytp-progress-bar");
 const currentTime = document.querySelector(".ytp-time-current");
 const seconds = parseInt(progressBar.getAttribute("aria-valuenow"), 10);
 const video = document.querySelector("video");
-const title = document.querySelector('meta[property="og:title"]');
 
 const formatTime = (time) => {
   let minutes = Math.floor(time / 60);
@@ -27,12 +26,13 @@ const toSeconds = (data) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getTimestamp") {
+    const title = document.querySelector(".ytp-chapter-title-content");
     chrome.runtime.sendMessage("cgdpfmfmacgglmhbogfcggdodclmimhm", {
       data: currentTime.innerText,
     });
     sendResponse({
       time: currentTime.innerText,
-      title: title ? title.content : "",
+      title: title ? title.innerText : "",
     });
   }
   if (request.action === "playFrom") {

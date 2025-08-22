@@ -50,9 +50,7 @@ const bookmarkUI = (data) => {
   const container = document.createElement("div");
   container.classList.add("title-container");
 
-  const span = document.createElement("span");
-  span.className = "title-text";
-  span.innerText = data.title;
+  container.innerText = data.title;
 
   const controlsDiv = document.createElement("div");
   const playIcon = document.createElement("i");
@@ -67,13 +65,7 @@ const bookmarkUI = (data) => {
     });
   });
 
-  //   pauseIcon.addEventListener("click", () => {
-  //     pauseIcon.style.display = "none";
-  //     playIcon.style.display = "inline-block";
-  //   });
-
   controlsDiv.appendChild(playIcon);
-  //   controlsDiv.appendChild(pauseIcon);
 
   const deleteBtn = document.createElement("button");
   deleteBtn.classList.add("btn", "delete-btn");
@@ -94,13 +86,11 @@ const bookmarkUI = (data) => {
     });
   });
 
-  container.appendChild(span);
   bookmarkItem.appendChild(imgDiv);
   bookmarkItem.appendChild(timeDiv);
   bookmarkItem.appendChild(container);
   bookmarkItem.appendChild(controlsDiv);
   bookmarkItem.appendChild(deleteBtn);
-
   bookmarkList.appendChild(bookmarkItem);
 };
 
