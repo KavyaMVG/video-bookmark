@@ -1,6 +1,6 @@
 const progressBar = document.querySelector(".ytp-progress-bar");
 const currentTime = document.querySelector(".ytp-time-current");
-const seconds = parseInt(progressBar.getAttribute("aria-valuenow"), 10);
+const seconds = parseInt(progressBar.getAttribute("aria-valuenow"), 10) || 0;
 const video = document.querySelector("video");
 
 const formatTime = (time) => {

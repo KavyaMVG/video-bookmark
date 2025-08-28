@@ -57,11 +57,18 @@ const bookmarkUI = (data) => {
   playIcon.classList.add("fa-solid", "fa-play");
 
   playIcon.addEventListener("click", () => {
+    const videoUrl = `https://www.youtube.com/watch?v=${data.videoId}&t=${data.time}s`;
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        action: "playFrom",
-        time: data || data.time,
-      });
+      const activeTab = tabs[0];
+      if (activeTab.url.includes(`v=${data.videoId}`)) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: "playFrom",
+          time: data || data.time,
+        });
+      } else {
+        chrome.tabs.update(activeTab.id, { url: videoUrl });
+      }
     });
   });
 
