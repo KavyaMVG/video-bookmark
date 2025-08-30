@@ -10,7 +10,7 @@ A Chrome Extension built to bookmark timestamps from youtube videos. This makes 
 
 ### Screenshot
 
-![project live image]()
+![project live image](./assets/bookmark-ui.png)
 
 ## Author
 
